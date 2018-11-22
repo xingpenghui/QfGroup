@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>班级分组信息录入</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script type="application/javascript" src="js/jquery-2.1.0.min.js"></script>
+    <script type="application/javascript">
+        //根据人数和每组人数计算组数
+        function js() {
+            var total=$("#cn2").val();
+            var gn=$("#cn3").val();
+            if(total.length>0 && gn.length>0){
+                var t1=parseInt(total);
+                var t2=parseInt(gn);
+                //验证是否整除且余数小于每组人数的一半
+                var t3=t1%t2;
+                var groups;
+                if(t3<t2/2){
+                    groups=parseInt(total)/parseInt(gn);
+                }else{
+                    groups=parseInt(total)/parseInt(gn)+1;
+                }
+                //赋值
+               $("#cn5").val(groups);
+            }
+        }
+        //提交表单信息
+        function subForm() {
+            $.ajax({
+               url:"cgsave",
+                method:"post",
+                data:$("#fm1").serialize(),
+                success:function (obj) {
+                    if(obj.code==1000){
+                        location.href="index.html";
+                    }else{
+                        alert("失败："+obj.msg);
+                    }
+                }
+            });
+        }
+        function getData() {
+            $.get("",null,function (arr) {
+                var tb=$("#tbdata");
+                tb.html("");
+                var content;
+                for(var i=0;i<arr.length;i++){
+                    content+="<tr>";
+                    content+="<td align='center'>"+arr[i].id+"</td>";
+                    content+="<td align='center'>"+arr[i].classno+"</td>";
+                    content+="<td align='center'>"+arr[i].count+"</td>";
+                    content+="<td align='center'>"+arr[i].stunum+"</td>";
+                    content+="<td align='center'>"+arr[i].groupnum+"</td>";
+                    content+="<td align='center'>"+arr[i].groupstus+"</td>";
+                    content+="<td align='center'>"+getF(arr[i].flag)+"</td>";
+                    content+="<td align='center'>"+arr[i].createdate+"</td>";
+                    content+="</tr>";
+                }
+                tb.html(content);
+            })
+        }
+        function getF(flag) {
+            var r="";
+            switch (flag){
+                case 0:r="未分配";break;
+                case 1:r="已分配";break;
+                case 2:r="重新分配";break;
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div>
+    <h1>班级分组信息录入</h1>
+    <form>
+        <div class="form-group">
+            <label for="cn1">班级名称</label>
+            <input type="text" name="classno" id="cn1" class="form-control" placeholder="请输入班级名称……">
+        </div>
+        <div class="form-group">
+            <label for="cn4">分组次数</label>
+            <input type="number" id="cn4" name="count" placeholder="请输入分组次数……">
+        </div>
+        <div class="form-group">
+            <label for="cn2">班级人数</label>
+            <input type="number" class="form-control" name="stunum" id="cn2" placeholder="请输入班级人数……">
+        </div>
+        <div class="form-group">
+            <label for="cn3">每组人数</label>
+            <input type="number" id="cn3" name="groupstus" placeholder="请输入每组人数……" onchange="js()">
+        </div>
+        <div class="form-group">
+            <label for="cn5">班级组数</label>
+            <input type="number" id="cn5" name="groupnum" readonly >
+        </div>
+        <button type="button" onclick="subForm()" class="btn btn-default">新增班级分组</button>
+    </form>
+    </div>
+
+
+    <div>
+        <button onclick="getData()">查看所有班级组信息</button>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>班级名称</th>
+                <th>分组次数</th>
+                <th>班级人数</th>
+                <th>组数</th>
+                <th>每组人数</th>
+                <th>状态</th>
+                <th>日期</th>
+            </tr>
+            </thead>
+            <tbody id="tbdata">
+
+
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+</body>
+</html>

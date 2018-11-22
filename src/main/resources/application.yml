@@ -1,0 +1,16 @@
+#设置服务器的端口号
+server:
+  port: 8080
+#数据库连接设置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_1805?userSSL=false&serverTimezone=GMT
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+#Spring data JPA的设置
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
